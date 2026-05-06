@@ -64,3 +64,56 @@ async function handleLogin() {
   }
 }
 </script>
+
+<style scoped>
+.login-container {
+  font-family: Arial, sans-serif;
+}
+
+.login-form h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #4a90d9;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.2rem;
+}
+
+.field label {
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.field input {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background: #4a90d9;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+}   
+</style>
