@@ -58,4 +58,19 @@ nav a {
 nav a.router-link-active {
   color: #4a90d9;
 }
+
+.logout-btn {
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(204, 202, 199);
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.90rem;
+  padding: 3px 4px;
+  color: #444343;
+}
+
+.logout-btn:hover {
+  color: #e43f3f;
+}
 </style>
