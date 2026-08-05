@@ -1,48 +1,39 @@
 <template>
   <form class="task-form" @submit.prevent="handleSubmit">
     <div class="task-row">
-      <input
-        v-model="newTask"
-        type="text"
-        placeholder="Nova tarefa..."
-        class="task-input"
-      />
+      <input v-model="newTask" type="text" placeholder="Nova tarefa..." class="task-input" />
       <button type="submit" class="task-button" :disabled="uploading">
         {{ editingTask ? 'Alterar' : 'Adicionar' }}
       </button>
-      <button
-        v-if="editingTask"
-        type="button"
-        class="task-button-cancel"
-        @click="handleCancel"
-      >
+      <button v-if="editingTask" type="button" class="task-button-cancel" @click="handleCancel">
         Cancelar
       </button>
     </div>
 
-    <div v-if="editingTask" class="image-section">
+    <div class="image-section">
       <img
-        v-if="previewUrl || editingTask.img_url"
-        :src="previewUrl || editingTask.img_url"
+        v-if="previewUrl || editingTask?.img_url"
+        :src="previewUrl || editingTask?.img_url"
         class="image-preview"
         alt="Imagem da tarefa"
       />
       <label class="image-label" :class="{ disabled: uploading }">
         <span v-if="uploading" class="upload-status">Enviando...</span>
         <span v-else>
-          {{ previewUrl || editingTask.img_url
-            ? 'Trocar imagem'
-            : 'Adicionar imagem'
-          }}
+          {{ previewUrl || editingTask?.img_url ? 'Trocar imagem' : 'Adicionar imagem' }}
         </span>
         <input
           type="file"
           accept="image/jpeg,image/png"
+          capture="environment"
           class="image-input"
           :disabled="uploading"
           @change="handleImageChange"
         />
       </label>
+      <p class="image-help">
+        Em celular, o botão pode abrir a câmera. Em notebook, abre o seletor de arquivos.
+      </p>
     </div>
   </form>
 </template>
@@ -68,6 +59,7 @@ watch(
   () => props.editingTask,
   (task) => {
     newTask.value = task ? task.title : ''
+    if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
     previewUrl.value = null
     imgAttachmentKey.value = null
   },
@@ -76,6 +68,7 @@ watch(
 async function handleImageChange(event) {
   const file = event.target.files[0]
   if (!file) return
+  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
   previewUrl.value = URL.createObjectURL(file)
   uploading.value = true
   try {
@@ -92,23 +85,27 @@ async function handleImageChange(event) {
 
 function handleSubmit() {
   if (!newTask.value.trim()) return
-  if (props.editingTask) {
-    emit(
-      'update',
-      props.editingTask.id,
-      newTask.value.trim(),
-      imgAttachmentKey.value
-    )
-  } else {
-    emit( 'add', newTask.value.trim() )
+
+  const payload = {
+    title: newTask.value.trim(),
+    imgAttachmentKey: imgAttachmentKey.value,
   }
+
+  if (props.editingTask) {
+    emit('update', props.editingTask.id, payload)
+  } else {
+    emit('add', payload)
+  }
+
   newTask.value = ''
+  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
   previewUrl.value = null
   imgAttachmentKey.value = null
 }
 
 function handleCancel() {
   newTask.value = ''
+  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
   previewUrl.value = null
   imgAttachmentKey.value = null
   emit('cancel')
@@ -223,5 +220,12 @@ function handleCancel() {
 
 .upload-status {
   color: #888;
+}
+
+.image-help {
+  font-size: 0.75rem;
+  color: #999;
+  margin: 0;
+  flex-basis: 100%;
 }
 </style>
