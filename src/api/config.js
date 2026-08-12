@@ -16,7 +16,7 @@ apiClient.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`
   }
   // Permite que o backend exclua esta sessão ao enviar notificações
-  const pushEndpoint = localStorage.getItem('push_endpoint') 
+  const pushEndpoint = localStorage.getItem('push_endpoint')
   if (pushEndpoint) {
     config.headers['X-Push-Endpoint'] = pushEndpoint
   }

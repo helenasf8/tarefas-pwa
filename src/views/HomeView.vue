@@ -49,6 +49,7 @@
 import { onMounted, ref } from 'vue'
 import TaskForm from '../components/TaskForm.vue'
 import TaskItem from '../components/TaskItem.vue'
+import InstallButton from '../components/InstallButton.vue'
 import { useTasksStore } from '../stores/tasks.js'
 
 const store = useTasksStore()
@@ -58,12 +59,14 @@ onMounted(() => {
   store.fetchTasks()
 })
 
+// 4.3: Recebe o payload completo ({ title, imgAttachmentKey }) vindo do TaskForm
 function handleAdd(payload) {
-  store.addTask(payload);
+  store.addTask(payload)
 }
 
-function handleUpdate(id, title, imgAttachmentKey) {
-  store.updateTask(id, { title, imgAttachmentKey })
+// Recebe o ID e o payload completo ({ title, imgAttachmentKey })
+function handleUpdate(id, payload) {
+  store.updateTask(id, payload)
   editingTask.value = null
 }
 
