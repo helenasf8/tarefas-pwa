@@ -6,19 +6,42 @@ const tasksApi = {
   },
 
   create(payload) {
-    const data =
-      typeof payload === 'string'
-        ? { title: payload }
-        : {
-            title: payload.title,
-            img_attachment_key: payload.imgAttachmentKey || payload.img_attachment_key || null,
-          }
+    if (typeof payload === 'string') {
+      return apiClient.post('/tasks', {
+        title: payload,
+      })
+    }
 
-    return apiClient.post('/tasks', data)
+    return apiClient.post('/tasks', {
+      title: payload.title,
+
+      img_attachment_key:
+        payload.imgAttachmentKey ||
+        payload.img_attachment_key ||
+        null,
+
+      latitude:
+        payload.latitude ?? null,
+
+      longitude:
+        payload.longitude ?? null,
+
+      accuracy:
+        payload.accuracy ?? null,
+
+      address:
+        payload.address ?? null,
+
+      location_timestamp:
+        payload.location_timestamp ?? null,
+    })
   },
 
   update(id, data) {
-    return apiClient.patch(`/tasks/${id}`, data)
+    return apiClient.patch(
+      `/tasks/${id}`,
+      data,
+    )
   },
 
   remove(id) {
@@ -27,11 +50,26 @@ const tasksApi = {
 
   uploadImage(file, description = '') {
     const formData = new FormData()
+
     formData.append('file', file)
-    if (description) formData.append('description', description)
-    return apiClient.post('/uploads/images/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+
+    if (description) {
+      formData.append(
+        'description',
+        description,
+      )
+    }
+
+    return apiClient.post(
+      '/uploads/images/',
+      formData,
+      {
+        headers: {
+          'Content-Type':
+            'multipart/form-data',
+        },
+      },
+    )
   },
 }
 

@@ -7,12 +7,18 @@ export const useTasksStore = defineStore('tasks', () => {
   const loading = ref(false)
   const error = ref(null)
 
-  const pendingTasks = computed(() => tasks.value.filter((t) => !t.done))
-  const completedTasks = computed(() => tasks.value.filter((t) => t.done))
+  const pendingTasks = computed(() =>
+    tasks.value.filter((t) => !t.done),
+  )
+
+  const completedTasks = computed(() =>
+    tasks.value.filter((t) => t.done),
+  )
 
   async function fetchTasks() {
     loading.value = true
     error.value = null
+
     try {
       const response = await tasksApi.getAll()
       tasks.value = response.data
@@ -25,10 +31,15 @@ export const useTasksStore = defineStore('tasks', () => {
   }
 
   async function addTask(payload) {
-    const titleText = typeof payload === 'string' ? payload : payload?.title
+    const titleText =
+      typeof payload === 'string'
+        ? payload
+        : payload?.title
+
     if (!titleText?.trim()) return
 
     error.value = null
+
     try {
       const response = await tasksApi.create(payload)
       tasks.value.push(response.data)
@@ -40,12 +51,21 @@ export const useTasksStore = defineStore('tasks', () => {
 
   async function toggleTask(id) {
     const task = tasks.value.find((t) => t.id === id)
+
     if (!task) return
+
     error.value = null
+
     try {
-      const response = await tasksApi.update(id, { done: !task.done })
+      const response = await tasksApi.update(id, {
+        done: !task.done,
+      })
+
       const index = tasks.value.findIndex((t) => t.id === id)
-      if (index !== -1) tasks.value[index] = response.data
+
+      if (index !== -1) {
+        tasks.value[index] = response.data
+      }
     } catch (err) {
       error.value = 'Erro ao atualizar tarefa.'
       console.error(err)
@@ -54,25 +74,78 @@ export const useTasksStore = defineStore('tasks', () => {
 
   async function removeTask(id) {
     error.value = null
+
     try {
       await tasksApi.remove(id)
-      tasks.value = tasks.value.filter((t) => t.id !== id)
+
+      tasks.value = tasks.value.filter(
+        (t) => t.id !== id,
+      )
     } catch (err) {
       error.value = 'Erro ao remover tarefa.'
       console.error(err)
     }
   }
 
-  async function updateTask(id, { title, imgAttachmentKey } = {}) {
+  async function updateTask(
+    id,
+    {
+      title,
+      imgAttachmentKey,
+      latitude,
+      longitude,
+      accuracy,
+      address,
+      location_timestamp,
+    } = {},
+  ) {
     if (title !== undefined && !title.trim()) return
+
     error.value = null
+
     const payload = {}
-    if (title !== undefined) payload.title = title.trim()
-    if (imgAttachmentKey != null) payload.img_attachment_key = imgAttachmentKey
+
+    if (title !== undefined) {
+      payload.title = title.trim()
+    }
+
+    if (imgAttachmentKey != null) {
+      payload.img_attachment_key = imgAttachmentKey
+    }
+
+    if (latitude !== undefined) {
+      payload.latitude = latitude
+    }
+
+    if (longitude !== undefined) {
+      payload.longitude = longitude
+    }
+
+    if (accuracy !== undefined) {
+      payload.accuracy = accuracy
+    }
+
+    if (address !== undefined) {
+      payload.address = address
+    }
+
+    if (location_timestamp !== undefined) {
+      payload.location_timestamp = location_timestamp
+    }
+
     try {
-      const response = await tasksApi.update(id, payload)
-      const index = tasks.value.findIndex((t) => t.id === id)
-      if (index !== -1) tasks.value[index] = response.data
+      const response = await tasksApi.update(
+        id,
+        payload,
+      )
+
+      const index = tasks.value.findIndex(
+        (t) => t.id === id,
+      )
+
+      if (index !== -1) {
+        tasks.value[index] = response.data
+      }
     } catch (err) {
       error.value = 'Erro ao editar tarefa.'
       console.error(err)

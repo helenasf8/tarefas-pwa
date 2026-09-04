@@ -6,13 +6,52 @@
       class="task-thumbnail"
       alt="Imagem da tarefa"
     />
+
     <label class="task-label">
-      <input type="checkbox" :checked="task.done" @change="$emit('toggle', task.id)" />
-      <span class="task-title">{{ task.title }}</span>
+      <input
+        type="checkbox"
+        :checked="task.done"
+        @change="$emit('toggle', task.id)"
+      />
+
+      <span class="task-content">
+        <span class="task-title">
+          {{ task.title }}
+        </span>
+
+        <span
+          v-if="
+            task.latitude != null &&
+            task.longitude != null
+          "
+          class="location-badge"
+        >
+          📍 Localização salva
+        </span>
+
+        <span
+          v-if="task.address"
+          class="task-address"
+        >
+          {{ task.address }}
+        </span>
+      </span>
     </label>
+
     <div class="task-actions">
-      <button class="task-edit" @click="$emit('edit', task)">Editar</button>
-      <button class="task-remove" @click="$emit('remove', task.id)">Remover</button>
+      <button
+        class="task-edit"
+        @click="$emit('edit', task)"
+      >
+        Editar
+      </button>
+
+      <button
+        class="task-remove"
+        @click="$emit('remove', task.id)"
+      >
+        Remover
+      </button>
     </div>
   </div>
 </template>
@@ -25,7 +64,11 @@ defineProps({
   },
 })
 
-defineEmits(['toggle', 'remove', 'edit'])
+defineEmits([
+  'toggle',
+  'remove',
+  'edit',
+])
 </script>
 
 <style scoped>
@@ -38,7 +81,6 @@ defineEmits(['toggle', 'remove', 'edit'])
   border-radius: 8px;
   margin-bottom: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: opacity 0.2s;
   gap: 10px;
 }
 
@@ -57,7 +99,7 @@ defineEmits(['toggle', 'remove', 'edit'])
 
 .task-label {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   cursor: pointer;
   flex: 1;
@@ -67,6 +109,13 @@ defineEmits(['toggle', 'remove', 'edit'])
   width: 20px;
   height: 20px;
   accent-color: #4a90d9;
+  margin-top: 2px;
+}
+
+.task-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .task-title {
@@ -78,17 +127,16 @@ defineEmits(['toggle', 'remove', 'edit'])
   color: #999;
 }
 
-.task-remove {
-  background: none;
-  border: none;
-  color: #e74c3c;
-  cursor: pointer;
-  font-size: 0.85rem;
-  padding: 4px 8px;
+.location-badge {
+  font-size: 0.75rem;
+  color: #4a90d9;
+  font-weight: 600;
 }
 
-.task-remove:hover {
-  text-decoration: underline;
+.task-address {
+  font-size: 0.75rem;
+  color: #777;
+  line-height: 1.3;
 }
 
 .task-actions {
@@ -107,6 +155,19 @@ defineEmits(['toggle', 'remove', 'edit'])
 }
 
 .task-edit:hover {
+  text-decoration: underline;
+}
+
+.task-remove {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+}
+
+.task-remove:hover {
   text-decoration: underline;
 }
 </style>
